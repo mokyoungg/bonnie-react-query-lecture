@@ -2,6 +2,8 @@ export async function fetchPosts(pageNum = 1) {
   const response = await fetch(
     `https://jsonplaceholder.typicode.com/posts?_limit=10&_page=${pageNum}`
   );
+
+  // throw new Error("you cannnot have this data");
   return response.json();
 }
 
