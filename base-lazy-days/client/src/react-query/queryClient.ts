@@ -1,12 +1,17 @@
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientConfig,
+} from "@tanstack/react-query";
+
 import { toast } from "@/components/app/toast";
-import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 
 function createTitle(errorMsg: string, actionType: "query" | "mutation") {
   const action = actionType === "query" ? "fetch" : "update";
-
   return `could not ${action} data: ${
     errorMsg ?? "error connecting to server"
-  } `;
+  }`;
 }
 
 function errorHandler(title: string) {
@@ -21,24 +26,26 @@ function errorHandler(title: string) {
   }
 }
 
-export const queryClient = new QueryClient({
+export const queryClientOptions: QueryClientConfig = {
   defaultOptions: {
     queries: {
-      staleTime: 600000, // 10minute
-      gcTime: 900000, // 15 minute
+      staleTime: 600000, // 10 minutes
+      gcTime: 900000, // 15 minutes
       refetchOnWindowFocus: false,
     },
   },
   queryCache: new QueryCache({
     onError: (error) => {
       const title = createTitle(error.message, "query");
-      errorHandler(error.message);
+      errorHandler(title);
     },
   }),
   mutationCache: new MutationCache({
     onError: (error) => {
       const title = createTitle(error.message, "mutation");
-      errorHandler(error.message);
+      errorHandler(title);
     },
   }),
-});
+};
+
+export const queryClient = new QueryClient(queryClientOptions);
